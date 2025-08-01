@@ -29,10 +29,6 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/medicines', medicineRoutes);
 
-app.get('/',(req,res)=>{
-  res.send('Server is running');
-})
-
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 

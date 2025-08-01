@@ -3,10 +3,22 @@ import Patient from '../models/Patient.js';
 
 const router = express.Router();
 
-// ✅ Add new patient
+// ✅ Add patient
 router.post('/add', async (req, res) => {
   try {
-    const { name, phone, address, gender, status, picture } = req.body;
+    const {
+      name,
+      phone,
+      address,
+      gender,
+      status,
+      picture,
+      weight,
+      bp,
+      temperature,
+      spo2,
+      bloodSugar
+    } = req.body;
 
     if (!name || !phone) {
       return res.status(400).json({ error: 'Name and phone are required' });
@@ -19,8 +31,13 @@ router.post('/add', async (req, res) => {
       gender,
       status,
       picture,
-      medicineList: [], // 🆕 default empty
-      testList: []       // 🆕 default empty
+      weight,
+      bp,
+      temperature,
+      spo2,
+      bloodSugar,
+      medicineList: [],
+      testList: []
     });
 
     await newPatient.save();
@@ -31,8 +48,7 @@ router.post('/add', async (req, res) => {
   }
 });
 
-// ✅ Get all patients
-// ✅ Count patients (yeh pehle hona chahiye)
+// ✅ Count patients
 router.get('/count', async (req, res) => {
   try {
     const count = await Patient.countDocuments();
@@ -54,7 +70,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ✅ Get a single patient by ID (sabse last mein)
+// ✅ Get single patient by ID
 router.get('/:id', async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
@@ -67,7 +83,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch patient' });
   }
 });
-
 
 // ✅ Delete patient
 router.delete('/:id', async (req, res) => {
@@ -83,9 +98,9 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// ✅ Update patient with medicines & tests
+// ✅ Update patient
 router.put('/:id', async (req, res) => {
-  console.log("🛠️ PUT request body:", req.body); // Debug log
+  console.log('🛠️ PUT request body:', req.body);
 
   try {
     const {
@@ -95,7 +110,12 @@ router.put('/:id', async (req, res) => {
       status,
       address,
       picture,
-      medicineList = [],  // ✅ safe defaults
+      weight,
+      bp,
+      temperature,
+      spo2,
+      bloodSugar,
+      medicineList = [],
       testList = []
     } = req.body;
 
@@ -109,6 +129,11 @@ router.put('/:id', async (req, res) => {
           status,
           address,
           picture,
+          weight,
+          bp,
+          temperature,
+          spo2,
+          bloodSugar,
           medicineList,
           testList
         }
@@ -129,6 +154,7 @@ router.put('/:id', async (req, res) => {
 });
 
 export default router;
+
 
 
 
