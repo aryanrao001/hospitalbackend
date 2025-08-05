@@ -3,11 +3,7 @@ import Medicine from '../models/Medicine.js';
 
 const router = express.Router();
 
-/**
- * ➕ Add New Medicines
- * Supports single or multiple medicines (via array)
- * Each medicine should contain: disease, medicineName, medicineType, dose, days, tests (optional)
- */
+// ✅ Add single or multiple medicines
 router.post('/add', async (req, res) => {
   try {
     const data = req.body;
@@ -23,17 +19,14 @@ router.post('/add', async (req, res) => {
   }
 });
 
-/**
- * 🔍 GET All Medicines or Filter by Disease
- * /api/medicines?disease=fever
- */
+// ✅ Get medicines (all or by disease)
 router.get('/', async (req, res) => {
   try {
     const { disease } = req.query;
 
     if (disease) {
       const medicines = await Medicine.find({
-        disease: { $regex: new RegExp(disease, 'i') }, // Case-insensitive match
+        disease: { $regex: new RegExp(disease, 'i') },
       });
 
       if (medicines.length === 0) {
@@ -43,7 +36,6 @@ router.get('/', async (req, res) => {
       return res.status(200).json(medicines);
     }
 
-    // Return all medicines sorted by latest
     const allMedicines = await Medicine.find().sort({ createdAt: -1 });
     res.status(200).json(allMedicines);
   } catch (err) {
@@ -52,9 +44,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * 🗑️ DELETE a Medicine by ID
- */
+// ✅ Delete medicine by ID
 router.delete('/:id', async (req, res) => {
   try {
     await Medicine.findByIdAndDelete(req.params.id);
@@ -64,25 +54,24 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-// routes/patientRoutes.js
+
+// ✅ Update medicine by ID (THIS IS WHAT YOU NEED FOR SAVE)
 router.put('/:id', async (req, res) => {
   try {
-    const { medicineList, testList } = req.body;
-
-    const updated = await Patient.findByIdAndUpdate(
+    const updatedMedicine = await Medicine.findByIdAndUpdate(
       req.params.id,
-      { medicineList, testList },
+      req.body,
       { new: true }
     );
 
-    res.status(200).json(updated);
+    res.status(200).json(updatedMedicine);
   } catch (err) {
-    console.error("Update Error:", err);
+    console.error('Update Error:', err);
     res.status(500).json({ message: err.message });
   }
 });
 
-
 export default router;
+
 
 
